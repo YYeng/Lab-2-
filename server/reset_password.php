@@ -32,10 +32,10 @@ function sendEmail($otp,$newpass,$user_email){
     $mail = new PHPMailer(true);
     $mail->SMTPDebug = 0;                                               //Disable verbose debug output
     $mail->isSMTP();                                                    //Send using SMTP
-    $mail->Host       = 'crimsonwebs.com';                         //Set the SMTP server to send through
+    $mail->Host       = '';                         //Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                           //Enable SMTP authentication
-    $mail->Username   = 'cvbattery@crimsonwebs.com';                  //SMTP username
-    $mail->Password   = '*K[B[fMLIUvX';                                 //SMTP password
+    $mail->Username   = '';                  //SMTP username
+    $mail->Password   = '';                                 //SMTP password
     $mail->SMTPSecure = 'tls';         
     $mail->Port       = 587;
     
@@ -44,7 +44,7 @@ function sendEmail($otp,$newpass,$user_email){
     $subject = "From CV Battery. Reset your password ";
     $message = "<p>Your account password has been reset. Please login using the information below.</p><br><br>
                 <h3>Password:".$newpass."</h3><br><br>
-    <a href='https://crimsonwebs.com/s270737/cvbattery/php/verify_account.php?email=".$user_email."&key=".$otp."'>Click Here to reactivate your account</a>";
+    <a href=''>Click Here to reactivate your account</a>";
     
     $mail->setFrom($from,"CV Batery");
     $mail->addAddress($to);                                             //Add a recipient
