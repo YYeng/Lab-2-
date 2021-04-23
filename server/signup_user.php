@@ -30,10 +30,10 @@ if ($conn->query($sqlsignup) === TRUE){
     $mail = new PHPMailer(true);
     $mail->SMTPDebug = 0;                                               //Disable verbose debug output
     $mail->isSMTP();                                                    //Send using SMTP
-    $mail->Host       = 'crimsonwebs.com';                          //Set the SMTP server to send through
+    $mail->Host       = '';                          //Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                           //Enable SMTP authentication
-    $mail->Username   = 'cvbattery@crimsonwebs.com';                  //SMTP username
-    $mail->Password   = '*K[B[fMLIUvX';                                 //SMTP password
+    $mail->Username   = '';                  //SMTP username
+    $mail->Password   = '*';                                 //SMTP password
     $mail->SMTPSecure = 'tls';         
     $mail->Port       = 587;
     
