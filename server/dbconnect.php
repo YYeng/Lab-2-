@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "crimsonw_cvbatteryadmin" ;
-$password = "D7+n!Z(Bh)kW";
-$dbname = "crimsonw_cvbatterydb";
+$username = "" ;
+$password = "";
+$dbname = "";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
