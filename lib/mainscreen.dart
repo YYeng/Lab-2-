@@ -1,13 +1,18 @@
+import 'package:cv_battey/user.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MainScreen());
 
 class MainScreen extends StatefulWidget {
+  final User user;
+
+  const MainScreen({Key key, this.user}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  _MainSrceenState createState() => _MainSrceenState();
 }
 
-class _MyAppState extends State<MainScreen> {
+class _MainSrceenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,9 +20,9 @@ class _MyAppState extends State<MainScreen> {
         title: Text('CV Battery'),
       ),
       body: Center(
-        child: Container(
-          child: Text('Book your baterry now'),
-        ),
+        child: Column(children: [
+          Text('Hello,' + widget.user.name),
+        ]),
       ),
     );
   }

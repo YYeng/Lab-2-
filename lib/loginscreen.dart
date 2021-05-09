@@ -1,4 +1,5 @@
 import 'package:cv_battey/signupscreen.dart';
+import 'package:cv_battey/user.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -149,21 +150,9 @@ class _LoginScreenState extends State<LoginScreen> {
         Uri.parse(
             'https://crimsonwebs.com/s270737/cvbattery/php/login_user.php'),
         body: {"email": email, "password": password}).then((response) {
-      print(response.body);
-      if (response.body == "success") {
-        Fluttertoast.showToast(
-            msg: " Login Success",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        FocusScope.of(context).unfocus();
+        print(response.body);
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (content) => MainScreen()));
-      } else {
+      if (response.body == "failed") {
         Fluttertoast.showToast(
             msg: "Login Failed",
             toastLength: Toast.LENGTH_SHORT,
@@ -172,6 +161,28 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
+      } else {
+        Fluttertoast.showToast(
+            msg: "Login Success",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+        List userData = response.body.split(",");
+        User user = User(
+            email: email,
+            password: password,
+            name: userData[1],
+            dateRegistered: userData[2],
+            rating: userData[3],
+            credit: userData[4],
+            status: userData[5]);
+
+        Navigator.push(context,
+            MaterialPageRoute(builder: (content) => MainScreen(user: user)));
       }
     });
   }
