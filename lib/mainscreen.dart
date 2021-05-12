@@ -1,7 +1,8 @@
 import 'package:cv_battey/user.dart';
 import 'package:flutter/material.dart';
-import 'package:cv_battey/loginscreen.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+
+import 'MyDrawer.dart';
 
 class MainScreen extends StatefulWidget {
   final User user;
@@ -21,7 +22,7 @@ class _MainSrceenState extends State<MainScreen> {
             appBar: AppBar(
               title: Text('Dashboard'),
             ),
-            //  drawer: SideDrawer(user: widget.user),
+            drawer: MyDrawer(user: widget.user),
             body: Center(
               child: Column(
                 children: AnimationConfiguration.toStaggeredList(
