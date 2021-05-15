@@ -1,7 +1,6 @@
 import 'package:cv_battey/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-
 import 'MyDrawer.dart';
 
 class MainScreen extends StatefulWidget {
@@ -60,6 +59,7 @@ class _MainSrceenState extends State<MainScreen> {
                                     image: AssetImage(
                                       'asset/images/battery.png',
                                     ),
+                                    fit: BoxFit.cover,
                                     child: InkWell(
                                       splashColor: Colors.blue.withAlpha(30),
                                       onTap: () {
@@ -132,19 +132,20 @@ class _MainSrceenState extends State<MainScreen> {
                                 ),
                                 child: Stack(
                                   children: [
-                                    Ink.image(
-                                      image: NetworkImage(
-                                        '',
-                                      ),
-                                      fit: BoxFit.cover,
-                                      child: InkWell(
-                                        splashColor: Colors.blue.withAlpha(30),
-                                        onTap: () {
-                                          // print('Card tapped.');
-                                          //go to another screen
-                                        },
-                                      ),
+                                    // Ink.image(
+                                    //   image: AssetImage(
+                                    //     '',
+                                    //   ),
+                                    //   fit: BoxFit.cover,
+                                    //  child:
+                                    InkWell(
+                                      splashColor: Colors.blue.withAlpha(30),
+                                      onTap: () {
+                                        // print('Card tapped.');
+                                        //go to another screen
+                                      },
                                     ),
+                                    //  ),
                                     Positioned(
                                       bottom: 16,
                                       right: 16,
@@ -157,17 +158,6 @@ class _MainSrceenState extends State<MainScreen> {
                                     ),
                                   ],
                                 ),
-
-                                // child: InkWell(
-                                //   splashColor: Colors.blue.withAlpha(30),
-                                //   child: Text("Rating",
-                                //       style: TextStyle(
-                                //           fontSize: 18,
-                                //           fontWeight: FontWeight.bold)),
-                                //   onTap: () {
-                                //     //go to another screen
-                                //   },
-                                // )
                               ),
                             ),
                           ],
