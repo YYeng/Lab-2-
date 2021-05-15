@@ -1,6 +1,8 @@
 import 'package:cv_battey/user.dart';
 import 'package:flutter/material.dart';
 
+import 'mainscreen.dart';
+
 class MyDrawer extends StatefulWidget {
   final User user;
 
@@ -22,32 +24,47 @@ class _MyDrawerState extends State<MyDrawer> {
           backgroundImage: AssetImage('asset/images/profilePic.png'),
         ),
       ),
-      ListTile(title: Text('Dashboard'),
+      ListTile(
+        title: Text('Dashboard'),
+        onTap: () {
+          // Update the state of the app.
+          Navigator.pop(context);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (content) => MainScreen(
+                        user: widget.user,
+                      )));
+        },
+      ),
+      ListTile(
+        title: Text('My Profile'),
         onTap: () {
           // Update the state of the app.
           // ...
-        },),
-      ListTile(title: Text('My Profile'),
+        },
+      ),
+      ListTile(
+        title: Text('My Purchase'),
         onTap: () {
           // Update the state of the app.
           // ...
-        },),
-      ListTile(title: Text('My Purchase'),
+        },
+      ),
+      ListTile(
+        title: Text('Rate Us'),
         onTap: () {
           // Update the state of the app.
           // ...
-        },),
-      ListTile(title: Text('Rate Us'),
+        },
+      ),
+      ListTile(
+        title: Text('Logout'),
         onTap: () {
           // Update the state of the app.
           // ...
-        },),
-      ListTile(title: Text('Logout'),
-        onTap: () {
-          // Update the state of the app.
-          // ...
-        },),
-
+        },
+      ),
     ]));
   }
 }
