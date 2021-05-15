@@ -59,7 +59,7 @@ class _MainSrceenState extends State<MainScreen> {
                                     image: AssetImage(
                                       'asset/images/battery.png',
                                     ),
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.contain,
                                     child: InkWell(
                                       splashColor: Colors.blue.withAlpha(30),
                                       onTap: () {
@@ -97,7 +97,7 @@ class _MainSrceenState extends State<MainScreen> {
                                       image: AssetImage(
                                         'asset/images/purchase-order.png',
                                       ),
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.contain,
                                       child: InkWell(
                                         splashColor: Colors.blue.withAlpha(30),
                                         onTap: () {
@@ -132,12 +132,12 @@ class _MainSrceenState extends State<MainScreen> {
                                 ),
                                 child: Stack(
                                   children: [
-                                    // Ink.image(
-                                    //   image: AssetImage(
-                                    //     '',
-                                    //   ),
-                                    //   fit: BoxFit.cover,
-                                    //  child:
+                                    Ink.image(
+                                      image: AssetImage(
+                                        'asset/images/contact-us.png',
+                                      ),
+                                      fit: BoxFit.contain,
+                                     child:
                                     InkWell(
                                       splashColor: Colors.blue.withAlpha(30),
                                       onTap: () {
@@ -145,12 +145,12 @@ class _MainSrceenState extends State<MainScreen> {
                                         //go to another screen
                                       },
                                     ),
-                                    //  ),
+                                   ),
                                     Positioned(
                                       bottom: 16,
                                       right: 16,
                                       left: 16,
-                                      child: Text("Rating",
+                                      child: Text("Contact Us",
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
