@@ -1,5 +1,5 @@
+import 'package:cv_battey/view/mainscreen.dart';
 import 'package:flutter/material.dart';
- 
 
 class Booking extends StatefulWidget {
   @override
@@ -9,15 +9,18 @@ class Booking extends StatefulWidget {
 class _BookingState extends State<Booking> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
+    return WillPopScope(
+      onWillPop: () {
+        return Navigator.pushReplacement(
+            context, new MaterialPageRoute(builder: (context) => MainScreen()));
+      },
+      child: Scaffold(
         appBar: AppBar(
-          title: Text('Material App Bar'),
+          title: Text('Select Model'),
         ),
         body: Center(
           child: Container(
-            child: Text('Hello World'),
+            child: Text('Select your vehicle model'),
           ),
         ),
       ),

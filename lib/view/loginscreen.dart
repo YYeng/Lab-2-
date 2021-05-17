@@ -1,3 +1,4 @@
+import 'package:cv_battey/config.dart';
 import 'package:cv_battey/view/signupscreen.dart';
 import 'package:cv_battey/user.dart';
 import 'package:flutter/material.dart';
@@ -148,7 +149,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     http.post(
         Uri.parse(
-            'https://crimsonwebs.com/s270737/cvbattery/php/login_user.php'),
+            //'https://crimsonwebs.com/s270737/cvbattery/php/login_user.php'
+            CONFIG.SERVER + "/cvbattery/php/login_user.php"),
         body: {"email": email, "password": password}).then((response) {
         print(response.body);
 

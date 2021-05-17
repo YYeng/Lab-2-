@@ -1,3 +1,4 @@
+import 'package:cv_battey/config.dart';
 import 'package:cv_battey/view/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -312,7 +313,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void _userSignUp(String _userName, String _email, String _password) {
     http.post(
         Uri.parse(
-            'https://crimsonwebs.com/s270737/cvbattery/php/signup_user.php'),
+           // 'https://crimsonwebs.com/s270737/cvbattery/php/signup_user.php'
+           CONFIG.SERVER + "/cvbattery/php/signup_user.php"),
         body: {
           "userName": _userName,
           "user_email": _email,

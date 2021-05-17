@@ -17,9 +17,11 @@ class MainScreen extends StatefulWidget {
 class _MainSrceenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _onBackPressed,
-        child: Scaffold(
+    return 
+    // WillPopScope(
+    //     onWillPop: _onBackPressed,
+    //     child:
+         Scaffold(
             appBar: AppBar(
               title: Text('Dashboard'),
             ),
@@ -172,11 +174,13 @@ class _MainSrceenState extends State<MainScreen> {
                       ),
                     ]),
               ),
-            )));
+            )
+            //)
+            );
   }
 
-  Future<bool> _onBackPressed() {
-    Navigator.pop(context, true);
-    return Future.value(false);
-  }
+  // Future<bool> _onBackPressed() {
+  //   Navigator.pop(context, true);
+  //   return Future.value(false);
+  // }
 }
