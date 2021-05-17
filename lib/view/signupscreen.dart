@@ -1,4 +1,4 @@
-import 'package:cv_battey/loginScreen.dart';
+import 'package:cv_battey/view/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';

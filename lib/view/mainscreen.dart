@@ -1,7 +1,9 @@
 import 'package:cv_battey/user.dart';
+import 'package:cv_battey/view/booking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'MyDrawer.dart';
+import 'booking.dart';
 
 class MainScreen extends StatefulWidget {
   final User user;
@@ -65,6 +67,12 @@ class _MainSrceenState extends State<MainScreen> {
                                       onTap: () {
                                         // print('Card tapped.');
                                         //go to another screen
+                                        Navigator.pop(context);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (content) =>
+                                                    Booking()));
                                       },
                                     ),
                                   ),
@@ -137,15 +145,14 @@ class _MainSrceenState extends State<MainScreen> {
                                         'asset/images/contact-us.png',
                                       ),
                                       fit: BoxFit.contain,
-                                     child:
-                                    InkWell(
-                                      splashColor: Colors.blue.withAlpha(30),
-                                      onTap: () {
-                                        // print('Card tapped.');
-                                        //go to another screen
-                                      },
+                                      child: InkWell(
+                                        splashColor: Colors.blue.withAlpha(30),
+                                        onTap: () {
+                                          // print('Card tapped.');
+                                          //go to another screen
+                                        },
+                                      ),
                                     ),
-                                   ),
                                     Positioned(
                                       bottom: 16,
                                       right: 16,
