@@ -1,6 +1,6 @@
 import 'package:cv_battey/config.dart';
 import 'package:cv_battey/view/signupscreen.dart';
-import 'package:cv_battey/user.dart';
+import 'package:cv_battey/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
     http.post(
         Uri.parse(
             //'https://crimsonwebs.com/s270737/cvbattery/php/login_user.php'
-            CONFIG.SERVER + "/cvbattery/php/login_user.php"),
+            CONFIG.SERVER +'/cvbattery/php/login_user.php'),
         body: {"email": email, "password": password}).then((response) {
         print(response.body);
 
@@ -181,7 +181,9 @@ class _LoginScreenState extends State<LoginScreen> {
             dateRegistered: userData[2],
             rating: userData[3],
             credit: userData[4],
-            status: userData[5]);
+            status: userData[5],
+            phone: userData[6],
+            address: userData[7]);
 
         Navigator.push(context,
             MaterialPageRoute(builder: (content) => MainScreen(user: user)));
