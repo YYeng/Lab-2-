@@ -1,6 +1,6 @@
-import 'package:cv_battey/user.dart';
+import 'package:cv_battey/model/user.dart';
+import 'package:cv_battey/view/profile.dart';
 import 'package:flutter/material.dart';
-
 import 'mainscreen.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -29,6 +29,7 @@ class _MyDrawerState extends State<MyDrawer> {
         onTap: () {
           // Update the state of the app.
           Navigator.pop(context);
+          Navigator.pop(context);
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -40,6 +41,13 @@ class _MyDrawerState extends State<MyDrawer> {
       ListTile(
         title: Text('My Profile'),
         onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (content) => Profile(
+                        user: widget.user,
+                      )));
           // Update the state of the app.
           // ...
         },
@@ -47,6 +55,7 @@ class _MyDrawerState extends State<MyDrawer> {
       ListTile(
         title: Text('My Purchase'),
         onTap: () {
+          Navigator.pop(context);
           // Update the state of the app.
           // ...
         },
@@ -54,6 +63,7 @@ class _MyDrawerState extends State<MyDrawer> {
       ListTile(
         title: Text('Rate Us'),
         onTap: () {
+          Navigator.pop(context);
           // Update the state of the app.
           // ...
         },
@@ -61,6 +71,7 @@ class _MyDrawerState extends State<MyDrawer> {
       ListTile(
         title: Text('Logout'),
         onTap: () {
+          Navigator.pop(context);
           // Update the state of the app.
           // ...
         },

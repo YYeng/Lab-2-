@@ -27,6 +27,7 @@ dependencies:
   flutter_staggered_animations: ^1.0.0
   fluttertoast: ^8.0.4
   http: ^0.13.1
+  image_picker: ^0.7.5+2
   shared_preferences: ^2.0.5
 
 dev_dependencies:

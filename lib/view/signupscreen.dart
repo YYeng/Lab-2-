@@ -1,3 +1,4 @@
+import 'package:cv_battey/config.dart';
 import 'package:cv_battey/view/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,13 +16,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _confirmPassController = new TextEditingController();
   SharedPreferences preferences;
-
-  bool _rememberMe = false;
+  double screenHeight, screenWidth;
+  bool _isChecked = false;
+  bool _obscureText = true;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     return MaterialApp(
       title: 'Sign up screen',
       home: Scaffold(
@@ -86,7 +90,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 decoration: InputDecoration(
                                     hintText: 'Email', icon: Icon(Icons.email)),
                                 validator: (String value) {
-                                  
                                   if (!RegExp(
                                           r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
                                       .hasMatch(value)) {
@@ -99,25 +102,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextFormField(
                                   controller: _passwordController,
                                   decoration: InputDecoration(
-                                      hintText: 'Password',
-                                      icon: Icon(Icons.lock)),
-                                  obscureText: true,
+                                    hintText: 'Password',
+                                    icon: Icon(Icons.lock),
+                                    suffix: InkWell(
+                                      onTap: _togglePass,
+                                      child: Icon(Icons.visibility),
+                                    ),
+                                  ),
+                                  obscureText: _obscureText,
                                   validator: (String value) {
                                     if (value.length == 0)
                                       return "This field is required";
                                     if (!RegExp(
-                                         r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{5,}$')
-                                      .hasMatch(value)) {
-                                    return "Password should contain atleast contain \ncapital letter, small letter and number ";
-                                  }
-                                      return null;
+                                            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{5,}$')
+                                        .hasMatch(value)) {
+                                      return "Password should contain at least contain \ncapital letter, small letter and number ";
+                                    }
+                                    return null;
                                   }),
                               TextFormField(
                                 controller: _confirmPassController,
                                 decoration: InputDecoration(
-                                    hintText: 'Confirm Password',
-                                    icon: Icon(Icons.lock)),
-                                obscureText: true,
+                                  hintText: 'Confirm Password',
+                                  icon: Icon(Icons.lock),
+                                  suffix: InkWell(
+                                    onTap: _togglePass,
+                                    child: Icon(Icons.visibility),
+                                  ),
+                                ),
+                                obscureText: _obscureText,
                                 validator: (String value) {
                                   if (value.length == 0)
                                     return "This field is required";
@@ -133,12 +146,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               Row(
                                 children: [
                                   Checkbox(
-                                      value: _rememberMe,
+                                      value: _isChecked,
                                       onChanged: (bool value) {
                                         _onChange(value);
                                       }),
-                                  Text("Remember Me",
-                                      style: TextStyle(fontSize: 18))
+                                  GestureDetector(
+                                    onTap: _showEULA,
+                                    child: Text('I Agree with Terms  ',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ),
                                 ],
                               ),
                               MaterialButton(
@@ -157,7 +176,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ))),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text("Adready have an account?",
+                  Text("Already have an account?",
                       style: TextStyle(fontSize: 16)),
                   GestureDetector(
                       child: Text(" Sign in ",
@@ -179,92 +198,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _onChange(bool value) {
-    String _userName = _userNameController.text.toString();
-    String _email = _emailController.text.toString();
-    String _password = _passwordController.text.toString();
-    String _confirmPass = _confirmPassController.text.toString();
-    if (_userName.isEmpty ||
-        _email.isEmpty ||
-        _password.isEmpty ||
-        _confirmPass.isEmpty) {
-      Fluttertoast.showToast(
-          msg: "Please fill in all the infomation",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color.fromRGBO(191, 30, 46, 50),
-          textColor: Colors.white,
-          fontSize: 18.0);
-      return;
-    } //validate empty column
-
     setState(() {
-      _rememberMe = value;
-      savePref(value, _userName, _email, _password, _confirmPass);
-    });
-  }
-
-  Future<void> savePref(bool value, String userName, String email,
-      String password, String confirmPass) async {
-    // obtain shared preferences
-    preferences = await SharedPreferences.getInstance();
-    if (value) {
-      // set value
-      await preferences.setString("userName", userName);
-      await preferences.setString("email", email);
-      await preferences.setString("password", password);
-      await preferences.setString("confirmPass", confirmPass);
-      await preferences.setBool("rememberMe", value);
-
-      Fluttertoast.showToast(
-          msg: "Preference saved",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color.fromRGBO(160, 20, 46, 50),
-          textColor: Colors.white,
-          fontSize: 18.0);
-      return;
-    } //if
-    else {
-      await preferences.setString("userName", "");
-      await preferences.setString("email", "");
-      await preferences.setString("password", "");
-      await preferences.setString("confirmPass", "");
-      await preferences.setBool("rememberMe", false);
-
-      Fluttertoast.showToast(
-          msg: "Preference removed",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color.fromRGBO(160, 20, 46, 50),
-          textColor: Colors.white,
-          fontSize: 18.0);
-
-      setState(() {
-        _userNameController.text ="";
-        _emailController.text ="";
-        _passwordController.text = "";
-        _confirmPassController.text = "";
-        _rememberMe = false;
-      });
-    }
-  }
-
-  Future<void> loadPreference() async {
-    preferences = await SharedPreferences.getInstance();
-    String _userName = preferences.getString("userName") ?? "";
-    String _email = preferences.getString("email") ?? "";
-    String _password = preferences.getString("password") ?? "";
-    String _confirmPas = preferences.getString("confirm password") ?? "";
-    _rememberMe = preferences.getBool("rememberMe") ?? false;
-
-    setState(() {
-      _userNameController.text = _userName;
-      _emailController.text = _email;
-      _passwordController.text = _password;
-      _confirmPassController.text = _confirmPas;
+      _isChecked = value;
     });
   }
 
@@ -273,51 +208,74 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String _email = _emailController.text.toString();
     String _password = _passwordController.text.toString();
     String _confirmPass = _confirmPassController.text.toString();
+    bool _validate = _formKey.currentState.validate();
 
     if (_userName.isEmpty ||
         _email.isEmpty ||
         _password.isEmpty ||
         _confirmPass.isEmpty) {
+      return;
+    }
 
-      _formKey.currentState.validate();
-     
-    } else if (_formKey.currentState.validate() == true) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30.0))),
-              title: Text("Sign up new account"),
-              content: Text("Are your sure?"),
-              actions: [
-                TextButton(
-                  child: Text("Ok"),
+    if (_validate == false) {
+      Fluttertoast.showToast(
+          msg: "Please enter valid information",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+
+    if (!_isChecked) {
+      Fluttertoast.showToast(
+          msg: "Please accept terms",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+      return;
+    }
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            title: Text("Sign up new account"),
+            content: Text("Are your sure?"),
+            actions: [
+              TextButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _userSignUp(_userName, _email, _password);
+                },
+              ),
+              TextButton(
+                  child: Text("Cancel"),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    _userSignUp(_userName, _email, _password);
-                  },
-                ),
-                TextButton(
-                    child: Text("Cancel"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
-              ],
-            );
-          });
-    }
+                  }),
+            ],
+          );
+        });
   }
 
   void _userSignUp(String _userName, String _email, String _password) {
-    http.post(
-        Uri.parse(
-            'https://crimsonwebs.com/s270737/cvbattery/php/signup_user.php'),
-        body: {
-          "userName": _userName,
-          "user_email": _email,
-          "password": _password
-        }).then((response) {
+    http.post(Uri.parse(
+        // 'https://crimsonwebs.com/s270737/cvbattery/php/signup_user.php'
+        CONFIG.SERVER + "/cvbattery/php/signup_user.php"), body: {
+      "userName": _userName,
+      "user_email": _email,
+      "password": _password
+    }).then((response) {
       print(response.body);
       if (response.body == "success") {
         Fluttertoast.showToast(
@@ -329,7 +287,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
-       
+
         _confirmPassController.clear();
         Navigator.pop(context);
         Navigator.push(
@@ -345,5 +303,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
             fontSize: 16.0);
       }
     });
+  }
+
+  void _togglePass() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
+  void _showEULA() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("EULA"),
+          content: new Container(
+            height: screenHeight / 4,
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: new SingleChildScrollView(
+                    child: RichText(
+                        softWrap: true,
+                        textAlign: TextAlign.justify,
+                        text: TextSpan(
+                            style: TextStyle(
+                              color: Colors.black,
+                              //fontWeight: FontWeight.w500,
+                              fontSize: 12.0,
+                            ),
+                            text:
+                                "End-User License Agreement (\"Agreement\")\nPlease read this End-User License Agreement carefully before clicking the \"I Agree\" button, downloading or using CV Battery.  This Agreement is a legal document between You and the Company and it governs your use of the Application made available to You by the Company.The Application is licensed, not sold, to You by the Company for use strictly in accordance with the terms of this Agreement. Contact Us If you have any questions about this Agreement, You can contact Us: \nBy email: cvbattery@crimsonwebs.com "
+                            //children: getSpan(),
+                            )),
+                  ),
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text(
+                "Close",
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 }
