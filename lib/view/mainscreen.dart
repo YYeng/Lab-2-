@@ -1,4 +1,3 @@
-import 'package:cv_battey/admin/pages/addBatteries.dart';
 import 'package:cv_battey/model/user.dart';
 import 'package:cv_battey/view/booking.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainSrceenState extends State<MainScreen> {
+
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -73,11 +74,9 @@ class _MainSrceenState extends State<MainScreen> {
                                   fit: BoxFit.contain,
                                   child: InkWell(
                                     splashColor: Colors.blue.withAlpha(30),
-                                    onTap: () {
+                                    onTap: () async {
                                       //go to another screen
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                      Navigator.push(
+                                      await Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (content) => Booking()
@@ -178,15 +177,6 @@ class _MainSrceenState extends State<MainScreen> {
                     ),
                   ]),
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              // Add onPressed code here
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (content) => AddBatteries()));
-            },
-            child: const Icon(Icons.add),
-            backgroundColor: Colors.blue,
           ),
         ));
   }

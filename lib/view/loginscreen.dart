@@ -30,113 +30,109 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  width: MediaQuery.of(context).size.width,
-                  child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                          Color(0xA28ABBDB),
-                          Color(0x8F5492AF),
-                          Color(0xDC249ED6),
-                          Color(0xFF009BE2),
-                        ]),
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: const Radius.circular(70),
-                          bottomRight: const Radius.circular(70),
-                        ),
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.4,
+                width: MediaQuery.of(context).size.width,
+                child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                        Color(0xA28ABBDB),
+                        Color(0x8F5492AF),
+                        Color(0xDC249ED6),
+                        Color(0xFF009BE2),
+                      ]),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: const Radius.circular(70),
+                        bottomRight: const Radius.circular(70),
                       ),
-                      child: Image.asset('asset/images/CVbattery.png')),
-                ),
-                Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
                     ),
-                    margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    elevation: 20,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            Text('Login',
-                                style: TextStyle(
-                                    fontSize: 26, fontWeight: FontWeight.bold)),
-                            TextFormField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                  hintText: 'Email', icon: Icon(Icons.email)),
-                              validator: (String value) {
-                                if (!RegExp(
-                                        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
-                                    .hasMatch(value)) {
-                                  return "Please enter a valid email address";
-                                }
+                    child: Image.asset('asset/images/CVbattery.png')),
+              ),
+              Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  elevation: 20,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Text('Login',
+                              style: TextStyle(
+                                  fontSize: 26, fontWeight: FontWeight.bold)),
+                          TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                                hintText: 'Email', icon: Icon(Icons.email)),
+                            validator: (String value) {
+                              if (!RegExp(
+                                      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
+                                  .hasMatch(value)) {
+                                return "Please enter a valid email address";
+                              }
 
-                                return null;
-                              },
-                            ),
-                            TextField(
-                              controller: _passwordController,
-                              decoration: InputDecoration(
-                                  hintText: 'Password', icon: Icon(Icons.lock)),
-                              obscureText: true,
-                            ),
-                            SizedBox(height: 20),
-                            Row(
-                              children: [
-                                Checkbox(
-                                    value: _rememberMe,
-                                    onChanged: (bool value) {
-                                      _onChange(value);
-                                    }),
-                                Text("Remember Me",
-                                    style: TextStyle(fontSize: 18))
-                              ],
-                            ),
-                            MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                minWidth: 200,
-                                child: Text('Login',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                                color: Colors.blueAccent,
-                                onPressed: _onLogin)
-                          ],
-                        ),
+                              return null;
+                            },
+                          ),
+                          TextField(
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                                hintText: 'Password', icon: Icon(Icons.lock)),
+                            obscureText: true,
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Checkbox(
+                                  value: _rememberMe,
+                                  onChanged: (bool value) {
+                                    _onChange(value);
+                                  }),
+                              Text("Remember Me",
+                                  style: TextStyle(fontSize: 18))
+                            ],
+                          ),
+                          MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              minWidth: 200,
+                              child: Text('Login',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                              color: Colors.blueAccent,
+                              onPressed: _onLogin)
+                        ],
                       ),
-                    )),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text("Don't have an account?",
-                      style: TextStyle(fontSize: 16)),
-                  GestureDetector(
-                      child: Text("  Sign up ",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      onTap: _signUpNewUser)
-                ]),
-                TextButton(
-                    child: Text("\nForgot Password",
+                    ),
+                  )),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text("Don't have an account?", style: TextStyle(fontSize: 16)),
+                GestureDetector(
+                    child: Text("  Sign up ",
                         style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
-                    onPressed: _forgotPassword)
-              ],
-            ),
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    onTap: _signUpNewUser)
+              ]),
+              TextButton(
+                  child: Text("\nForgot Password",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  onPressed: _forgotPassword)
+            ],
           ),
         ),
       ),
@@ -147,12 +143,11 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = _emailController.text.toString();
     String password = _passwordController.text.toString();
 
-    http.post(
-        Uri.parse(
+    http.post(Uri.parse(
             //'https://crimsonwebs.com/s270737/cvbattery/php/login_user.php'
-            CONFIG.SERVER +'/cvbattery/php/login_user.php'),
+            CONFIG.SERVER + '/cvbattery/php/login_user.php'),
         body: {"email": email, "password": password}).then((response) {
-        print(response.body);
+      print(response.body);
 
       if (response.body == "failed") {
         Fluttertoast.showToast(
@@ -301,9 +296,9 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 void _resetPassword(String email) {
-  http.post(
-      Uri.parse(
-          "https://crimsonwebs.com/s270737/cvbattery/php/reset_password.php"),
+  http.post(Uri.parse(
+          // "https://crimsonwebs.com/s270737/cvbattery/php/reset_password.php"
+          CONFIG.SERVER + '/cvbattery/php/reset_password.php'),
       body: {"email": email}).then((response) {
     print(response.body);
     if (response.body == "success") {
