@@ -1,13 +1,13 @@
 <?php
  
 include_once("dbconnect.php");
-$namebattery = $_POST['namebattery'];
+$searchValue = $_POST['searchValue'];
 
-if ($namebattery == "all"){
+if ($searchValue == "all"){
     $sql = "SELECT * FROM tbl_batteries ORDER BY battery_id DESC";
     
 }else{
-    $sql = "SELECT * FROM tbl_batteries WHERE name_battery LIKE '%$namebattery %' ORDER BY battery_id DESC";
+    $sql = "SELECT * FROM tbl_batteries WHERE name_battery LIKE '%$searchValue%' OR vehicle_type LIKE '%$searchValue%' ORDER BY battery_id DESC";
 }
 
 
