@@ -76,7 +76,7 @@ class _MainSrceenState extends State<MainScreen> {
                                     splashColor: Colors.blue.withAlpha(30),
                                     onTap: () async {
                                       //go to another screen
-                                      await Navigator.push(
+                                     Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (content) => Booking()
