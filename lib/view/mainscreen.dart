@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'MyDrawer.dart';
 
-//import 'package:cv_battey/view/add_newproduct.dart';
 class MainScreen extends StatefulWidget {
   final User user;
 
@@ -15,6 +14,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainSrceenState extends State<MainScreen> {
+  
+
 
 
   @override
@@ -79,7 +80,7 @@ class _MainSrceenState extends State<MainScreen> {
                                      Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (content) => Booking()
+                                              builder: (content) => Booking(user: widget.user)
                                               ));
                                     },
                                   ),
