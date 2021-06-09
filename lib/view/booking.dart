@@ -1,25 +1,21 @@
 import 'dart:convert';
+import 'package:cv_battey/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../config.dart';
 import 'package:http/http.dart' as http;
 
+class Booking extends StatefulWidget {
+  final User user;
 
-class Booking extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BookService();
-  }
-}
+  const Booking({Key key, this.user}) : super(key: key);
 
-class BookService extends StatefulWidget {
-  
   @override
   _BookingState createState() => _BookingState();
 }
 
-class _BookingState extends State<BookService> {
+class _BookingState extends State<Booking> {
   double screenHeight, screenWidth;
   TextEditingController _searchCtrl = new TextEditingController();
   List _productList = [];
@@ -31,6 +27,7 @@ class _BookingState extends State<BookService> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _testasync();
+      _loadCart();
     });
   }
 
@@ -163,9 +160,7 @@ class _BookingState extends State<BookService> {
                                     ),
                                     Container(
                                         child: ElevatedButton(
-                                      onPressed: () => {
-                                        addtocart(index)
-                                        },
+                                      onPressed: () => {addtocart(index)},
                                       child: Text("Add to Cart",
                                           style: TextStyle(fontSize: 18)),
                                     ))
@@ -204,15 +199,15 @@ class _BookingState extends State<BookService> {
 
   Future<void> _testasync() async {
     _loadProduct("all");
+
   }
 
   addtocart(int index) async {
     String batteryid = _productList[index]['battery_id'];
-   
+
     http.post(Uri.parse(CONFIG.SERVER + "/cvbattery/php/insertcart.php"),
         body: {
-          // "name": name,
-          // "email": email,
+          "email": widget.user.email,
           "batteryid": batteryid
         }).then((response) {
       print(response.body);
@@ -242,10 +237,10 @@ class _BookingState extends State<BookService> {
   void _loadCart() {
     http.post(Uri.parse(CONFIG.SERVER + "/cvbattery/php/loadcartitem.php"),
         body: {
-         
-          }).then((response) {
+          "email": widget.user.email,
+        }).then((response) {
       setState(() {
-        cartItem = int.parse(response.body);
+        cartItem = int.tryParse(response.body);
         print(cartItem);
       });
     });
