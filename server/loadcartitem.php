@@ -8,7 +8,7 @@ $result = $conn->query($sqlcart);
 $total = 0;
 if ($result->num_rows > 0) {
      while ($row = $result ->fetch_assoc()){
-        $total = $total+ $row['quantity'];
+        $total = $total+ $row['cartqty'];
      } 
 } 
 echo $total;
