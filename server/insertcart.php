@@ -23,7 +23,7 @@ if ($resultstock->num_rows > 0) {
             $resultcart = $conn->query($sqlcheckcart);
             if ($resultcart->num_rows == 0) {
            //product is not in the cart proceed with insert new
-                 echo $sqladdtocart = "INSERT INTO tbl_cart (user_email, battery_id, quantity) VALUES ('$email','$batteryid','1')";
+                 echo $sqladdtocart = "INSERT INTO tbl_cart (user_email, battery_id, cartqty) VALUES ('$email','$batteryid','1')";
 
                 if ($conn->query($sqladdtocart) === TRUE) {
                     echo "success";
@@ -32,7 +32,7 @@ if ($resultstock->num_rows > 0) {
                 }
             } else { 
                //if the product is in the cart, proceed with update
-                echo $sqlupdatecart = "UPDATE tbl_cart SET quantity = quantity+1 WHERE battery_id = '$batteryid' AND user_email = '$email'";
+                echo $sqlupdatecart = "UPDATE tbl_cart SET cartqty = cartqty  +1 WHERE battery_id = '$batteryid' AND user_email = '$email'";
                 if ($conn->query($sqlupdatecart) === TRUE) {
                     echo "success";
                 } else {

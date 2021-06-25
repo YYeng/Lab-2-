@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cv_battey/model/user.dart';
+import 'package:cv_battey/view/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -61,7 +62,12 @@ class _BookingState extends State<Booking> {
                   style: TextStyle(color: Colors.white)),
               icon: Icon(Icons.shopping_cart_outlined, color: Colors.white),
               onPressed: () {
-                gotoCart();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (content) => CartScreen(user: widget.user)));
+
+                _loadProduct("all");
               })
         ],
       ),
@@ -199,7 +205,6 @@ class _BookingState extends State<Booking> {
 
   Future<void> _testasync() async {
     _loadProduct("all");
-
   }
 
   addtocart(int index) async {
@@ -245,6 +250,4 @@ class _BookingState extends State<Booking> {
       });
     });
   }
-
-  gotoCart() {}
 }

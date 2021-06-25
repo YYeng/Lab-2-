@@ -1,4 +1,5 @@
 import 'package:cv_battey/view/booking.dart';
+import 'package:cv_battey/view/cart.dart';
 import 'package:cv_battey/view/loginscreen.dart';
 import 'package:cv_battey/view/mainscreen.dart';
 import 'package:cv_battey/view/profile.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         '/mainscreen': (BuildContext context) => new MainScreen(),
         '/booking': (BuildContext context) => new Booking(),
         '/profile':(BuildContext context) => new Profile(),
-        
+        '/cart': (BuildContext context) => new CartScreen()
       },
      
       title: 'CV Battery App',
