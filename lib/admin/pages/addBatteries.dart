@@ -1,10 +1,8 @@
-//import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 //import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-// import 'package:sn_progress_dialog/progress_dialog.dart';
 
 class AddBatteries extends StatefulWidget {
   @override
@@ -45,7 +43,6 @@ class _AddBatteriesState extends State<AddBatteries> {
                         Text('Product Detail',
                             style: TextStyle(
                                 fontSize: 26, fontWeight: FontWeight.bold)),
-
                         GestureDetector(
                           onTap: () => {_onPictureSelectionDialog()},
                           child: Container(
@@ -136,8 +133,6 @@ class _AddBatteriesState extends State<AddBatteries> {
                           },
                         ),
                         SizedBox(height: 20),
-
-                        //  ),
                         MaterialButton(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -304,8 +299,8 @@ class _AddBatteriesState extends State<AddBatteries> {
     //         textColor: Colors.white,
     //         fontSize: 16.0);
 
-    //     // Navigator.pushReplacement(
-    //     //    context, MaterialPageRoute(builder: (content) => MyShop()));
+    // Navigator.pushReplacement(
+    //    context, MaterialPageRoute(builder: (content) => MyShop()));
     //   }
     // });
   }
