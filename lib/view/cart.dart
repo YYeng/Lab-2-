@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cv_battey/config.dart';
 import 'package:cv_battey/model/user.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,7 @@ class _CartScreenState extends State<CartScreen> {
   String _titlecenter = "Oops, Your Cart is Empty";
   List _cartList = [];
   double _total = 0.0;
-
+  
   @override
   void initState() {
     super.initState();
@@ -45,7 +44,9 @@ class _CartScreenState extends State<CartScreen> {
           if (_cartList.isEmpty)
             Flexible(child: Center(child: Text(_titlecenter)))
           else
-            Flexible(child: OrientationBuilder(builder: (context, orientation) {
+            Flexible(
+              child: OrientationBuilder(
+              builder: (context, orientation) {
               return GridView.count(
                   crossAxisCount: 1,
                   childAspectRatio: 3 / 1,
@@ -126,8 +127,10 @@ class _CartScreenState extends State<CartScreen> {
                         ],
                       ))),
                     );
-                  }));
-            })),
+                  })
+                  );
+            })
+            ),
           Container(
             child: Row(
               children: [
@@ -213,16 +216,16 @@ class _CartScreenState extends State<CartScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Do you want to delete this item from cart? "),
+            title: Text("Are you sure you want to delete item(s) from cart? "),
             actions: [
-              TextButton(
-                  child: Text("Yes"),
+              ElevatedButton(
+                  child: Text("Delete"),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _deleteCart(index);
                   }),
-              TextButton(
-                  child: Text("No"),
+              ElevatedButton(
+                  child: Text("Cancel"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   }),
@@ -271,8 +274,8 @@ class _CartScreenState extends State<CartScreen> {
                       Navigator.of(context).pop();
                       await Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => CheckOutPage(
-                            user: widget.user, total: _total),
+                          builder: (context) =>
+                              CheckOutPage(user: widget.user, total: _total),
                         ),
                       );
                     },
@@ -287,3 +290,4 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 }
+
