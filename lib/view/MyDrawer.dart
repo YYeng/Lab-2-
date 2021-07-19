@@ -13,6 +13,8 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
+String pathAsset = 'asset/images/profilePic.png';
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -21,7 +23,7 @@ class _MyDrawerState extends State<MyDrawer> {
         accountName: Text(widget.user.name, style: TextStyle(fontSize: 20)),
         accountEmail: Text(widget.user.email),
         currentAccountPicture: CircleAvatar(
-          backgroundImage: AssetImage('asset/images/profilePic.png'),
+          backgroundImage: AssetImage(pathAsset),
         ),
       ),
       ListTile(
@@ -73,7 +75,7 @@ class _MyDrawerState extends State<MyDrawer> {
         onTap: () {
           Navigator.pop(context);
           // Update the state of the app.
-          // ...
+         
         },
       ),
     ]));
