@@ -2,6 +2,7 @@ import 'package:cv_battey/model/user.dart';
 import 'package:cv_battey/view/profile.dart';
 import 'package:flutter/material.dart';
 import 'mainscreen.dart';
+import 'myPurchase.dart';
 
 class MyDrawer extends StatefulWidget {
   final User user;
@@ -59,17 +60,12 @@ String pathAsset = 'asset/images/profilePic.png';
         onTap: () {
           Navigator.pop(context);
           // Update the state of the app.
-          // ...
+           Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => MyPurchases(user: widget.user), //pass user info
+                            ));
         },
       ),
-      ListTile(
-        title: Text('Rate Us'),
-        onTap: () {
-          Navigator.pop(context);
-          // Update the state of the app.
-          // ...
-        },
-      ),
+     
       ListTile(
         title: Text('Logout'),
         onTap: () {
