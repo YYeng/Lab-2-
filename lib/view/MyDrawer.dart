@@ -14,7 +14,7 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-String pathAsset = 'asset/images/profilePic.png';
+  String pathAsset = 'asset/images/profilePic.png';
 
   @override
   Widget build(BuildContext context) {
@@ -60,20 +60,61 @@ String pathAsset = 'asset/images/profilePic.png';
         onTap: () {
           Navigator.pop(context);
           // Update the state of the app.
-           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => MyPurchases(user: widget.user), //pass user info
-                            ));
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                MyPurchases(user: widget.user), //pass user info
+          ));
         },
       ),
-     
       ListTile(
         title: Text('Logout'),
         onTap: () {
           Navigator.pop(context);
-          // Update the state of the app.
-         
+          userLogout();
         },
       ),
     ]));
+  }
+
+  Future<void> userLogout() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+              title: new Text("Logout CV Battery app?"),
+              content: new Container(
+                  child: Row(
+                children: [
+                  Flexible(
+                    flex: 5,
+                    child: TextButton(
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                        onPressed: () => {
+                              Navigator.pop(context),
+                            }),
+                  ),
+                  Flexible(
+                    flex: 5,
+                    child: TextButton(
+                        child: Text(
+                          "Yes, I'm sure",
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                        onPressed: () => {
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  "/loginscreen", (route) => route == null)
+                            }),
+                  ),
+                ],
+              )));
+        });
   }
 }
