@@ -1,5 +1,7 @@
 import 'package:cv_battey/model/user.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 class ContactUs extends StatefulWidget {
   final User user;
@@ -11,20 +13,18 @@ class ContactUs extends StatefulWidget {
 }
 
 class _ContactUsState extends State<ContactUs> {
-  TextEditingController name = new TextEditingController();
-  TextEditingController email = new TextEditingController();
-  TextEditingController message = new TextEditingController();
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController messagesController = new TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Contact Us'),
-          flexibleSpace: Container(
+        flexibleSpace: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -51,11 +51,11 @@ class _ContactUsState extends State<ContactUs> {
                                   fontSize: 16, fontWeight: FontWeight.bold))),
                       SizedBox(height: 10),
                       TextFormField(
-                        controller: name,
-                         decoration: InputDecoration(
-                            hintText: 'Enter Name',
-                            border: OutlineInputBorder(),
-                          ),
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter Name',
+                          border: OutlineInputBorder(),
+                        ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (String value) {
                           if (value.isEmpty) {
@@ -73,12 +73,11 @@ class _ContactUsState extends State<ContactUs> {
                                   fontSize: 16, fontWeight: FontWeight.bold))),
                       SizedBox(height: 10),
                       TextFormField(
-                        
-                        controller: email,
-                         decoration: InputDecoration(
-                            hintText: 'Enter Email',
-                            border: OutlineInputBorder(),
-                          ),
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter Email',
+                          border: OutlineInputBorder(),
+                        ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (String value) {
                           if (value.isEmpty) return "This field is required";
@@ -91,9 +90,9 @@ class _ContactUsState extends State<ContactUs> {
                           child: Text("Messages",
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold))),
-                       SizedBox(height: 10),
+                      SizedBox(height: 10),
                       TextFormField(
-                          controller: message,
+                          controller: messagesController,
                           keyboardType: TextInputType.multiline,
                           decoration: InputDecoration(
                             hintText: 'Enter Messages',
@@ -110,20 +109,94 @@ class _ContactUsState extends State<ContactUs> {
                       SizedBox(height: 20),
                       MaterialButton(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          minWidth: 200,
+                          minWidth: 400,
                           child: Text('Submit',
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white)),
                           color: Colors.blueAccent,
-                          onPressed: () {})
+                          onPressed: () {
+                            _onSubmitMessages();
+                          }),
+                      Text(
+                          "Customer Service will get back to you after you sent the message as soon as possible",
+                          style: TextStyle(
+                              fontSize: 15,
+                             ))
                     ],
                   ),
                 ))),
       ),
     );
+  }
+
+  void _onSubmitMessages() {
+      String _name = nameController.text.toString();
+      String _email = emailController.text.toString();
+      String _messages = messagesController.text.toString();
+
+   if(_name == ""|| _email == ""|| _messages == ""){
+      Fluttertoast.showToast(
+            msg: "Please fill in all the detail",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 4,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+   
+   }else{
+
+    setState(() {
+
+      _sendMessages(_name, _email, _messages);
+
+      return;
+    });
+
+   }
+  }
+
+  Future<void> _sendMessages(String name, String email, String messages) async {
+    http.post(
+        Uri.parse(
+            'https://crimsonwebs.com/s270737/cvbattery/php/insert_messages.php'),
+        body: {
+          "name": name,
+          "email": email,
+          "messages": messages,
+        }).then((response) {
+      print(response.body);
+      if (response.body == "success") {
+        Fluttertoast.showToast(
+            msg: "Submit messages successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 4,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+       setState(() {
+         nameController.text = "";
+         emailController.text = ""; 
+         messagesController.text = "";
+
+       });
+
+      } else {
+        Fluttertoast.showToast(
+            msg: "Failed",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    });
   }
 }
