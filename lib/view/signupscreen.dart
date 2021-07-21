@@ -69,7 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       fontWeight: FontWeight.bold)),
                               TextFormField(
                                 controller: _userNameController,
-                                keyboardType: TextInputType.emailAddress,
+                                keyboardType: TextInputType.name,
                                 decoration: InputDecoration(
                                     hintText: 'User name',
                                     icon: Icon(Icons.person)),

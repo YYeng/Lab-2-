@@ -4,7 +4,6 @@ import 'package:cv_battey/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'booking.dart';
 
 class PayScreen extends StatefulWidget {
   final User user;
@@ -31,8 +30,8 @@ class _PayScreenState extends State<PayScreen> {
             color: Colors.white,
             onPressed: () {
               Navigator.pop(context);
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => Booking()));
+              Navigator.pop(context);
+              Navigator.pop(context);
             }),
         title: Text('Payment'),
         flexibleSpace: Container(

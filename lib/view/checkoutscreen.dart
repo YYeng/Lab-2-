@@ -1,4 +1,3 @@
-
 import 'package:cv_battey/model/delivery.dart';
 import 'package:cv_battey/model/user.dart';
 import 'package:cv_battey/view/payment.dart';
@@ -11,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
+import 'package:http/http.dart' as http;
+import '../config.dart';
 import 'mappage.dart';
 import 'myPurchase.dart';
 
@@ -455,7 +456,15 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 prefs = await SharedPreferences.getInstance();
                 await prefs.setString("phone", _phone);
 
-                setState(() {});
+                setState(() {
+                  http.post(
+                      Uri.parse(
+                          CONFIG.SERVER + '/cvbattery/php/update_profile.php'),
+                      body: {
+                        "phoneNo": _phone,
+                        "email": widget.user.email
+                      });
+                });
               },
             ),
           ],
@@ -467,7 +476,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
   Future<void> _loadPref() async {
     prefs = await SharedPreferences.getInstance();
     _name = prefs.getString("name") ?? widget.user.name;
-    _phone = prefs.getString("phone") ?? 'Click to set';
+    _phone = prefs.getString("phone") ?? widget.user.phone;
     setState(() {});
   }
 
@@ -595,7 +604,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           onPressed: () => {
                             Navigator.pop(context),
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => MyPurchases(), //pass user info
+                              builder: (context) => MyPurchases(
+                                  // user: widget.user,
+                                  // total: widget.total,
+                                  // time: _selectedtime,
+                                  // date: selectedDate
+                                  ), //pass user info
                             ))
                           },
                         )),
@@ -615,7 +629,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             Navigator.pop(context),
                             await Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => PayScreen(
-                                  user: widget.user, total: widget.total),
+                                  user: widget.user,
+                                  total: widget.total,
+                                  time: _selectedtime,
+                                  date: selectedDate),
                             ))
                           },
                         )),
