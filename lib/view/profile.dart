@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
-//import 'package:cv_battey/view/change_password.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_battey/model/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import '../config.dart';
 import 'MyDrawer.dart';
 import 'package:http/http.dart' as http;
+import 'package:ndialog/ndialog.dart';
 
 class Profile extends StatefulWidget {
   final User user;
@@ -29,6 +30,14 @@ class _ProfileState extends State<Profile> {
   String _address = "Set Now";
   String pathAsset = 'asset/images/profilePic.png';
   SharedPreferences prefs;
+  double screenHeight, screenWidth;
+  List profile = [];
+
+  TextEditingController phoneNumCtrl = new TextEditingController();
+  TextEditingController addressCtrl = new TextEditingController();
+  TextEditingController oldPwdCtrl = new TextEditingController();
+  TextEditingController newPwdCtrl = new TextEditingController();
+  TextEditingController confirmPwdCtrl = new TextEditingController();
 
   @override
   void initState() {
@@ -38,6 +47,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     _name = widget.user.name;
 
     return Scaffold(
@@ -236,18 +247,18 @@ class _ProfileState extends State<Profile> {
     }
 
     String base64Image = base64Encode(_image.readAsBytesSync());
-    http.post(Uri.parse(CONFIG.SERVER + '/cvbattery/php/store_image.php'),
+    http.post(Uri.parse(CONFIG.SERVER + '/cvbattery/php/insert_image.php'),
         body: {
           "email": widget.user.email,
           "encoded_string": base64Image
         }).then((response) {
       print(response.body);
+
+      setState(() {});
     });
   }
 
   Future<void> updatePhoneDialog() async {
-    TextEditingController phoneNumCtrl = new TextEditingController();
-
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -257,8 +268,8 @@ class _ProfileState extends State<Profile> {
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               title: new Text("Update Phone Number"),
               content: new Container(
-                child: Row(
-                 children: [
+                  child: Row(
+                children: [
                   Flexible(
                       flex: 9,
                       child: TextField(
@@ -287,8 +298,7 @@ class _ProfileState extends State<Profile> {
                             loadPhoneNo(_phone);
                           });
                         },
-                        icon: Icon(Icons.check)
-                        ),
+                        icon: Icon(Icons.check)),
                   )
                 ],
               )));
@@ -328,7 +338,6 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> updateAddressDialog() async {
-    TextEditingController addressCtrl = new TextEditingController();
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -337,11 +346,10 @@ class _ProfileState extends State<Profile> {
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               title: new Text("Update Address"),
               content: new Container(
-                  child: Row(
-                children: [
-                  Flexible(
-                      flex: 9,
-                      child: TextField(
+                  height: screenHeight / 3.5,
+                  child: Column(
+                    children: [
+                      TextField(
                         controller: addressCtrl,
                         decoration: InputDecoration(
                             border: new OutlineInputBorder(
@@ -351,27 +359,42 @@ class _ProfileState extends State<Profile> {
                             ),
                             labelText: 'Address'),
                         keyboardType: TextInputType.multiline,
-                        minLines: 3,
+                        minLines: 6,
                         maxLines: 6,
-                      )),
-                  Flexible(
-                    flex: 1,
-                    child: IconButton(
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          _address = addressCtrl.text;
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: ElevatedButton(
+                              child: Text("Location"),
+                              onPressed: () {
+                                _getUserCurrentLoc();
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            flex: 4,
+                            child: ElevatedButton(
+                              child: Text("Confirm"),
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                _address = addressCtrl.text;
 
-                          prefs = await SharedPreferences.getInstance();
-                          await prefs.setString("address", _address);
+                                prefs = await SharedPreferences.getInstance();
+                                await prefs.setString("address", _address);
 
-                          setState(() {
-                            loadAddress(_address);
-                          });
-                        },
-                        icon: Icon(Icons.check)),
-                  )
-                ],
-              )));
+                                setState(() {
+                                  loadAddress(_address);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )));
         });
   }
 
@@ -408,11 +431,6 @@ class _ProfileState extends State<Profile> {
   }
 
   updatePwdDialog() {
-    
-    TextEditingController oldPwd = new TextEditingController();
-    TextEditingController newPwd = new TextEditingController();
-    TextEditingController confirmPwd = new TextEditingController();
-
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -420,107 +438,113 @@ class _ProfileState extends State<Profile> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               title: new Text("Change Password"),
-              content: Column(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(15),
-                      alignment: Alignment.centerLeft,
-                      child: Text("Old Password")),
-                  Flexible(
-                      flex: 9,
-                      child: TextField(
-                        controller: oldPwd,
-                        decoration: InputDecoration(
-                            border: new OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+              content: Container(
+                height: screenHeight / 2,
+                child: Column(
+                  children: [
+                    Container(
+                        padding: EdgeInsets.all(15),
+                        alignment: Alignment.centerLeft,
+                        child: Text("Old Password")),
+                    Flexible(
+                        flex: 9,
+                        child: TextField(
+                          controller: oldPwdCtrl,
+                          decoration: InputDecoration(
+                              border: new OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
                               ),
-                            ),
-                            labelText: 'Old Password'),
-                      )),
-                  Container(
-                      padding: EdgeInsets.all(15),
-                      alignment: Alignment.centerLeft,
-                      child: Text("New Password")),
-                  Flexible(
-                      flex: 9,
-                      child: TextField(
-                        controller: newPwd,
-                        decoration: InputDecoration(
-                            border: new OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                              labelText: 'Old Password'),
+                        )),
+                    Container(
+                        padding: EdgeInsets.all(15),
+                        alignment: Alignment.centerLeft,
+                        child: Text("New Password")),
+                    Flexible(
+                        flex: 9,
+                        child: TextField(
+                          controller: newPwdCtrl,
+                          decoration: InputDecoration(
+                              border: new OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
                               ),
-                            ),
-                            labelText: 'New Password'),
-                      )),
-                  Container(
-                      padding: EdgeInsets.all(15),
-                      alignment: Alignment.centerLeft,
-                      child: Text("Confirm Password")),
-                  Flexible(
-                      flex: 9,
-                      child: TextField(
-                        controller: confirmPwd,
-                        decoration: InputDecoration(
-                            border: new OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                              labelText: 'New Password'),
+                        )),
+                    Container(
+                        padding: EdgeInsets.all(15),
+                        alignment: Alignment.centerLeft,
+                        child: Text("Confirm Password")),
+                    Flexible(
+                        flex: 9,
+                        child: TextField(
+                          controller: confirmPwdCtrl,
+                          decoration: InputDecoration(
+                              border: new OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
                               ),
-                            ),
-                            labelText: 'Confirm Password'),
-                      )),
-                  TextButton(
-                      child: Text("Update", style: TextStyle(fontSize: 18)),
-                      onPressed: () {
-                         Navigator.of(context).pop();
-                        _changePwd(oldPwd.text,newPwd.text,confirmPwd.text);
-                      }),
-                ],
+                              labelText: 'Confirm Password'),
+                        )),
+                    TextButton(
+                        child: Text("Update", style: TextStyle(fontSize: 18)),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _changePwd();
+                        }),
+                  ],
+                ),
               ));
         });
   }
 
-  Future<void> _changePwd(String oldPwd, String newPwd,String confirmPwd) async {
-    
-    http.post(Uri.parse(CONFIG.SERVER + '/cvbattery/php/change_password.php'),
-        body: {
-          "oldPwd": oldPwd,
-          "newPwd": newPwd,
-          "confirmPwd": confirmPwd,
-          "email": widget.user.email
-        }).then((response) {
-      print(response.body);
-      if (response.body == "Success") {
-        Fluttertoast.showToast(
-            msg: "Update Success",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-      } else if(response.body == "Old Password Not Matchfailed") {
-        Fluttertoast.showToast(
-            msg: "Old Password Not Match",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-      }else{
-        Fluttertoast.showToast(
-            msg: "Update Failed",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-      }
-    });
+  void _changePwd() async {
+    String oldPwd = oldPwdCtrl.text.toString();
+    String newPwd = newPwdCtrl.text.toString();
+    String confirmPwd = confirmPwdCtrl.text.toString();
 
+    if (newPwd != confirmPwd) {
+      Fluttertoast.showToast(
+          msg: "New Password and Confirm Password Does Not match",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      http.post(Uri.parse(CONFIG.SERVER + '/cvbattery/php/change_password.php'),
+          body: {
+            "email": widget.user.email,
+            "oldPwd": oldPwd,
+            "newPwd": newPwd,
+          }).then((response) {
+        print(response.body);
+        if (response.body == "Success") {
+          Fluttertoast.showToast(
+              msg: "Update Success",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        } else {
+          Fluttertoast.showToast(
+              msg: "Update Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      });
+    }
   }
 
   Future<void> _loadUpdate() async {
@@ -530,5 +554,70 @@ class _ProfileState extends State<Profile> {
       _phone = prefs.getString("phone") ?? 'Set now';
       _address = prefs.getString("address") ?? 'Set now';
     });
+  }
+
+  Future<void> _getUserCurrentLoc() async {
+    ProgressDialog progressDialog = ProgressDialog(context,
+        message: Text("Searching address"), title: Text("Locating..."));
+    progressDialog.show();
+    await _determinePosition().then((value) => {_getPlace(value)});
+    await Future.delayed(Duration(seconds: 5));
+    setState(
+      () {},
+    );
+    progressDialog.dismiss();
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  void _getPlace(Position position) async {
+    List<Placemark> newPlace =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    Placemark placeMark = newPlace[0];
+    String name = placeMark.name.toString();
+    String subLocality = placeMark.subLocality.toString();
+    String locality = placeMark.locality.toString();
+    String administrativeArea = placeMark.administrativeArea.toString();
+    String postalCode = placeMark.postalCode.toString();
+    String country = placeMark.country.toString();
+
+    _address = name +
+        "," +
+        subLocality +
+        ",\n" +
+        locality +
+        "," +
+        postalCode +
+        ",\n" +
+        administrativeArea +
+        "," +
+        country;
+
+    addressCtrl.text = _address;
   }
 }

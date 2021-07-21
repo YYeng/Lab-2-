@@ -1,8 +1,10 @@
 import 'package:cv_battey/model/user.dart';
 import 'package:cv_battey/view/booking.dart';
+import 'package:cv_battey/view/contactUs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'MyDrawer.dart';
+import 'myPurchase.dart';
 
 class MainScreen extends StatefulWidget {
   final User user;
@@ -118,6 +120,11 @@ class _MainSrceenState extends State<MainScreen> {
                                     onTap: () {
                                       // print('Card tapped.');
                                       //go to another screen
+                                       Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (content) => MyPurchases(user: widget.user)
+                                              ));
                                     },
                                   ),
                                 ),
@@ -157,6 +164,11 @@ class _MainSrceenState extends State<MainScreen> {
                                     onTap: () {
                                       // print('Card tapped.');
                                       //go to another screen
+                                       Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (content) => ContactUs(user: widget.user)
+                                              ));
                                     },
                                   ),
                                 ),

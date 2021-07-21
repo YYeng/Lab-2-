@@ -1,6 +1,6 @@
-
 import 'package:cv_battey/model/delivery.dart';
 import 'package:cv_battey/model/user.dart';
+import 'package:cv_battey/view/payment.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,7 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
+import 'package:http/http.dart' as http;
+import '../config.dart';
 import 'mappage.dart';
+import 'myPurchase.dart';
 
 class CheckOutPage extends StatefulWidget {
   final double total;
@@ -28,7 +31,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
   String _phone = "Click to set";
   String address = "";
   String _selectedtime = "09:00 A.M";
-  List _cartList = [];
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
@@ -46,7 +48,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
     int cm = _convMin(_curtime);
     _selectedtime = _minToTime(cm);
     _loadPref();
-    
   }
 
   @override
@@ -65,8 +66,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   colors: <Color>[Colors.blue[300], Colors.blue[700]])),
         ),
       ),
-      body: Column(
-        children: [
+      body: Column(children: [
         Expanded(
             child: ListView(
           children: [
@@ -272,7 +272,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
           ],
         ) //ListView
             ),
-
         Container(
           child: Row(
             children: [
@@ -298,7 +297,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 child: ElevatedButton(
                     child: Text("Process with Payment",
                         style: TextStyle(fontSize: 20)),
-                    onPressed: () {},
+                    onPressed: () {
+                      payNowDialog();
+                    },
                     style: ElevatedButton.styleFrom(
                         primary: Colors.red[400],
                         padding: EdgeInsets.symmetric(
@@ -455,7 +456,15 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 prefs = await SharedPreferences.getInstance();
                 await prefs.setString("phone", _phone);
 
-                setState(() {});
+                setState(() {
+                  http.post(
+                      Uri.parse(
+                          CONFIG.SERVER + '/cvbattery/php/update_profile.php'),
+                      body: {
+                        "phoneNo": _phone,
+                        "email": widget.user.email
+                      });
+                });
               },
             ),
           ],
@@ -467,7 +476,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
   Future<void> _loadPref() async {
     prefs = await SharedPreferences.getInstance();
     _name = prefs.getString("name") ?? widget.user.name;
-    _phone = prefs.getString("phone") ?? 'Click to set';
+    _phone = prefs.getString("phone") ?? widget.user.phone;
     setState(() {});
   }
 
@@ -557,5 +566,82 @@ class _CheckOutPageState extends State<CheckOutPage> {
     setState(() => selectedDate = newDate);
   }
 
-
+  void payNowDialog() {
+    showDialog(
+        builder: (context) => new AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              content: new Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Payment Option",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        )),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                            child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0)),
+                          minWidth: 100,
+                          height: 100,
+                          child: Text('Cash on Delivery',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16)),
+                          color: Theme.of(context).accentColor,
+                          elevation: 10,
+                          onPressed: () => {
+                            Navigator.pop(context),
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => MyPurchases(
+                                  // user: widget.user,
+                                  // total: widget.total,
+                                  // time: _selectedtime,
+                                  // date: selectedDate
+                                  ), //pass user info
+                            ))
+                          },
+                        )),
+                        SizedBox(width: 10),
+                        Flexible(
+                            child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0)),
+                          minWidth: 100,
+                          height: 100,
+                          child: Text('Online Banking',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16)),
+                          color: Theme.of(context).accentColor,
+                          elevation: 10,
+                          onPressed: () async => {
+                            Navigator.pop(context),
+                            await Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PayScreen(
+                                  user: widget.user,
+                                  total: widget.total,
+                                  time: _selectedtime,
+                                  date: selectedDate),
+                            ))
+                          },
+                        )),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        context: context);
+  }
 }
