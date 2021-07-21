@@ -52,35 +52,43 @@ class _ContactUsState extends State<ContactUs> {
                       SizedBox(height: 10),
                       TextFormField(
                         controller: nameController,
+                        keyboardType: TextInputType.name,
                         decoration: InputDecoration(
-                          hintText: 'Enter Name',
-                          border: OutlineInputBorder(),
-                        ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                            hintText: 'Enter Name',
+                            border: OutlineInputBorder()),
                         validator: (String value) {
                           if (value.isEmpty) {
                             return 'This field is required';
+                          }
+                          if (value.trim().length < 4) {
+                            return 'Username must be at least 4 characters in length';
                           }
                           // Return null if the entered username is valid
                           return null;
                         },
                       ),
                       Container(
-                          padding: EdgeInsets.only(top: 15),
-                          alignment: Alignment.centerLeft,
-                          child: Text("Email",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold))),
+                        padding: EdgeInsets.only(top: 15),
+                        alignment: Alignment.centerLeft,
+                        child: Text("Email",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                      ),
                       SizedBox(height: 10),
                       TextFormField(
                         controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: 'Enter Email',
+                          hintText: 'Email',
                           border: OutlineInputBorder(),
                         ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (String value) {
-                          if (value.isEmpty) return "This field is required";
+                          if (!RegExp(
+                                  r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$")
+                              .hasMatch(value)) {
+                            return "Please enter a valid email address";
+                          }
+
                           return null;
                         },
                       ),
@@ -92,20 +100,23 @@ class _ContactUsState extends State<ContactUs> {
                                   fontSize: 16, fontWeight: FontWeight.bold))),
                       SizedBox(height: 10),
                       TextFormField(
-                          controller: messagesController,
-                          keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
-                            hintText: 'Enter Messages',
-                            border: OutlineInputBorder(),
-                          ),
-                          style: TextStyle(fontSize: 16),
-                          minLines: 6, //Normal textInputField will be displayed
-                          maxLines: 6, // when user presses enter
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (String value) {
-                            if (value.isEmpty) return "This field is required";
-                            return null;
-                          }),
+                        controller: messagesController,
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          hintText: 'Enter Messages',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return 'This field is required';
+                          }
+
+                          return null;
+                        },
+                        style: TextStyle(fontSize: 16),
+                        minLines: 6, //Normal textInputField will be displayed
+                        maxLines: 6, // when user presses enter
+                      ),
                       SizedBox(height: 20),
                       MaterialButton(
                           shape: RoundedRectangleBorder(
@@ -124,8 +135,8 @@ class _ContactUsState extends State<ContactUs> {
                       Text(
                           "Customer Service will get back to you after you sent the message as soon as possible",
                           style: TextStyle(
-                              fontSize: 15,
-                             ))
+                            fontSize: 15,
+                          ))
                     ],
                   ),
                 ))),
@@ -134,30 +145,40 @@ class _ContactUsState extends State<ContactUs> {
   }
 
   void _onSubmitMessages() {
-      String _name = nameController.text.toString();
-      String _email = emailController.text.toString();
-      String _messages = messagesController.text.toString();
+    String _name = nameController.text.toString();
+    String _email = emailController.text.toString();
+    String _messages = messagesController.text.toString();
+    bool _validate = _formKey.currentState.validate();
 
-   if(_name == ""|| _email == ""|| _messages == ""){
+    if (_validate == false) {
       Fluttertoast.showToast(
-            msg: "Please fill in all the detail",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 4,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-   
-   }else{
-
-    setState(() {
-
-      _sendMessages(_name, _email, _messages);
-
+          msg: "Please enter valid information",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
       return;
-    });
+    }
 
-   }
+    if (_name == "" || _email == "" || _messages == "") {
+      Fluttertoast.showToast(
+          msg: "Please fill in all the detail",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 4,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+          return;
+    } else {
+      setState(() {
+        _sendMessages(_name, _email, _messages);
+
+        return;
+      });
+    }
   }
 
   Future<void> _sendMessages(String name, String email, String messages) async {
@@ -180,13 +201,11 @@ class _ContactUsState extends State<ContactUs> {
             textColor: Colors.white,
             fontSize: 16.0);
 
-       setState(() {
-         nameController.text = "";
-         emailController.text = ""; 
-         messagesController.text = "";
-
-       });
-
+        setState(() {
+          nameController.text = "";
+          emailController.text = "";
+          messagesController.text = "";
+        });
       } else {
         Fluttertoast.showToast(
             msg: "Failed",
